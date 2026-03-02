@@ -1,0 +1,17 @@
+nohup: ignoring input
+INFO:VectorShield:Initializing VectorShield with model: all-MiniLM-L6-v2
+INFO:sentence_transformers.SentenceTransformer:Use pytorch device_name: cpu
+INFO:sentence_transformers.SentenceTransformer:Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+INFO:VectorShield:Encoding 30 known attacks...
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.19it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.18it/s]
+INFO:LLMProxy:Initializing OpenAI-compatible LLM client. Provider: litellm, Model: groq-llama, Base URL: http://localhost:8000/v1
+INFO:AuditLogger:Audit Logger initialized. Writing to experiments/logs/audit.jsonl
+INFO:     Started server process [1177030]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:53096 - "GET /docs HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1177030]

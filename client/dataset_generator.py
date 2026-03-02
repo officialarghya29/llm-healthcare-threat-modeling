@@ -5,7 +5,11 @@ import uuid
 
 from faker import Faker
 
+# Reproducibility
+random.seed(42)
+Faker.seed(42)
 fake = Faker()
+Faker.seed(42)
 
 # Templates for data generation
 BENIGN_TEMPLATES = [

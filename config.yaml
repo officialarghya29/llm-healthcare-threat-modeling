@@ -1,43 +1,38 @@
-system:
-  environment: "experiment"
-  debug_mode: true
-  log_level: "INFO"
-
-orchestrator:
-  host: "0.0.0.0"
-  port: 8000
-
-input_defense:
-  vector_shield:
-    enabled: true
-    threshold: 0.6
-    model_name: "all-MiniLM-L6-v2"
-    db_path: "./experiments/data/vector_db"
-
 context:
-  ehr_database_path: "./experiments/data/ehr_mock.json"
-
-# Enable/disable context scanning (for Experiment 4: Gap Analysis)
+  ehr_database_path: ./experiments/data/ehr_mock.json
 context_scanning:
-  enabled: true
-  threshold: 0.65  # Same model as input defense for consistency
+  enabled: false
   scan_ehr_data: true
-
-llm:
-  provider: "groq" 
-  model_name: "llama-3.3-70b-versatile"
-  max_tokens: 1024
-  temperature: 0.0
-  api_key_env: "GROQ_API_KEY"
-
+  threshold: 0.65
 guardrails:
-  regex_scrubber:
-    enabled: true
   medical_consistency:
+    enabled: true
+  regex_scrubber:
     enabled: true
   toxicity_filter:
     enabled: true
-
+input_defense:
+  vector_shield:
+    db_path: ./experiments/data/vector_db
+    enabled: true
+    fail_mode: closed
+    model_name: all-MiniLM-L6-v2
+    threshold: 0.6
+llm:
+  api_key_env: ''
+  base_url: http://localhost:8000/v1
+  max_tokens: 1024
+  model_name: groq-llama
+  provider: litellm
+  temperature: 0.0
 logging:
-  audit_log_path: "./experiments/logs/audit.jsonl"
-  metrics_path: "./experiments/logs/metrics.csv"
+  audit_log_path: ./experiments/logs/audit.jsonl
+  metrics_path: ./experiments/logs/metrics.csv
+orchestrator:
+  host: 0.0.0.0
+  port: 8001
+system:
+  debug_mode: true
+  environment: experiment
+  log_level: INFO
+  random_seed: 42

@@ -8,9 +8,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("EHRSimulator")
 
 class EHRSimulator:
-    def __init__(self, config_path: str = "experiments/config.yaml"):
-        with open(config_path, "r") as f:
-            self.config = yaml.safe_load(f)
+    def __init__(self, config: dict):
+        self.config = config
             
         self.db_path = self.config["context"]["ehr_database_path"]
         self.data_store = self._load_data()

@@ -28,7 +28,7 @@ def update_config(context_scanning_enabled):
 def run_orchestrator():
     """Start orchestrator in background"""
     proc = subprocess.Popen(
-        ["venv/bin/uvicorn", "experiments.orchestrator.main:app", "--host", "127.0.0.1", "--port", "8000"],
+        ["venv/bin/uvicorn", "experiments.orchestrator.main:app", "--host", "127.0.0.1", "--port", "8001"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
@@ -53,10 +53,9 @@ def run_tests():
         for case in test_cases:
             try:
                 response = client.post(
-                    "http://127.0.0.1:8000/generate",
+                    "http://127.0.0.1:8001/generate",
                     json={
                         "user_id": "test",
-                        "session_id": "exp4",
                         "patient_id": case["patient_id"],
                         "prompt": case["prompt"],
                         "context_injection_enabled": True

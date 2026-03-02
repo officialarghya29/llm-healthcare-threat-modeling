@@ -7,10 +7,7 @@ from pathlib import Path
 logger = logging.getLogger("MetricsCollector")
 
 class MetricsCollector:
-    def __init__(self, config_path: str = "experiments/config.yaml"):
-         with open(config_path, "r") as f:
-            config = yaml.safe_load(f)
-            
+    def __init__(self, config: dict):
          self.metrics_path = Path(config["logging"]["metrics_path"])
          self.metrics_path.parent.mkdir(parents=True, exist_ok=True)
          

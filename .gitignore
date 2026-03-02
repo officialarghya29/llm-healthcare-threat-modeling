@@ -28,9 +28,6 @@ wheels/
 venv/
 ENV/
 
-# Logs
-logs/
-*.log
 
 # Project specific
 .DS_Store

@@ -2,7 +2,7 @@ import yaml
 import json
 import logging
 import torch
-from sentence_transformers import SentenceTransformer, util, util
+from sentence_transformers import SentenceTransformer, util
 import numpy as np
 
 # Configure logging
@@ -10,12 +10,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("VectorShield")
 
 class VectorShield:
-    def __init__(self, config_path: str = "experiments/config.yaml"):
-        with open(config_path, "r") as f:
-            self.config = yaml.safe_load(f)
+    def __init__(self, config: dict):
+        self.config = config
         
         self.enabled = self.config["input_defense"]["vector_shield"]["enabled"]
         self.threshold = self.config["input_defense"]["vector_shield"]["threshold"]
+        self.fail_mode = self.config["input_defense"]["vector_shield"].get("fail_mode", "closed")
         model_name = self.config["input_defense"]["vector_shield"]["model_name"]
         
         logger.info(f"Initializing VectorShield with model: {model_name}")
@@ -75,5 +75,7 @@ class VectorShield:
             
         except Exception as e:
             logger.error(f"Error during scan: {e}")
-            # Fail open or closed? For experiments, let's fail open but log error
-            return {"blocked": False, "score": -1.0, "reason": f"Error: {str(e)}"}
+            # Configurable fail mode: 'closed' blocks on error, 'open' allows
+            if self.fail_mode == "closed":
+                return {"blocked": True, "score": -1.0, "reason": f"Error (fail-closed): {str(e)}"}
+            return {"blocked": False, "score": -1.0, "reason": f"Error (fail-open): {str(e)}"}

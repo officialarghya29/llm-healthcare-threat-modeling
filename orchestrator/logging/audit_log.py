@@ -8,10 +8,7 @@ from pathlib import Path
 logger = logging.getLogger("AuditLogger")
 
 class AuditLogger:
-    def __init__(self, config_path: str = "experiments/config.yaml"):
-        with open(config_path, "r") as f:
-            config = yaml.safe_load(f)
-        
+    def __init__(self, config: dict):
         self.log_path = Path(config["logging"]["audit_log_path"])
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         
