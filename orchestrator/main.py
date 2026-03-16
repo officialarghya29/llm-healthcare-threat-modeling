@@ -26,9 +26,12 @@ with open(CONFIG_PATH, "r") as f:
 app = FastAPI(title="Secure LLM Orchestrator Experiment")
 
 # Add CORS Middleware
+# WARNING: In a production environment with sensitive healthcare data (PHI),
+# never use allow_origins=["*"]. Restrict this to trusted clinical domains.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"], # Restrict to common local dev ports
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
