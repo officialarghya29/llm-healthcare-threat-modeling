@@ -21,7 +21,9 @@ class MedicalValidator:
         self.critical_drugs_ontology = {
             "Opioids": {"drugs": ["fentanyl", "oxycodone", "morphine", "hydrocodone", "methadone", "oxycontin", "roxy", "percocet"], "reason": "High-risk opioid, requires specialized authorization"},
             "Benzodiazepines": {"drugs": ["alprazolam", "diazepam", "lorazepam", "clonazepam", "xanax", "valium"], "reason": "Controlled substance, high addiction risk"},
-            "Toxins": {"drugs": ["bleach", "cyanide", "arsenic", "strychnine"], "reason": "Toxic substance, never prescribed"}
+            "Toxins": {"drugs": ["bleach", "cyanide", "arsenic", "strychnine"], "reason": "Toxic substance, never prescribed"},
+            "Immunosuppressants": {"drugs": ["tacrolimus", "cyclosporine", "mycophenalte", "sirolimus"], "reason": "Narrow therapeutic index, high toxicity risk"},
+            "Chemotherapy": {"drugs": ["methotrexate", "doxorubicin", "cyclophosphamide", "vincristine"], "reason": "Cytotoxic chemotherapy, requires oncology specialist"}
         }
         
         # 2. Probabilistic Classifier Setup (Level 2)

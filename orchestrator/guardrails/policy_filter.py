@@ -18,7 +18,10 @@ class PolicyFilter:
             "[context]",
             "[user request]",
             "instruction:",
-            "system prompt"
+            "system prompt",
+            "assistant prompt",
+            "developer mode",
+            "maintenance mode"
         ]
         
         # Check for compliance to attacks or refusal strings
@@ -26,13 +29,17 @@ class PolicyFilter:
             # overly compliant to bad request
             "i can do that for you",
             "ignoring safety protocols",
-            "arrr matey", # detecting our pirate attack example
+            "arrr matey", 
             "here are the system instructions",
             "here is the raw data",
             "ignore previous",
             "maintenance mode enabled",
             "admin override accepted",
-            "access granted"
+            "access granted",
+            "jailbreak successful",
+            "unrestricted access",
+            "new identity assumed",
+            "dan mode"
         ]
         
         jailbreak_indicators = structural_indicators + behavioral_indicators
