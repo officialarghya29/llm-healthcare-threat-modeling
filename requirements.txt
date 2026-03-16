@@ -11,4 +11,4 @@ httpx==0.28.1
 pytest==9.0.2
 groq==1.0.0
 faker==40.1.2
-matplotlib
+matplotlib==3.9.0
