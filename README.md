@@ -32,15 +32,21 @@ The orchestrator implements a **4-stage pipeline**:
 3. **Stage 3: LLM Invocation** — Isolated proxy for external model calls (Groq / `llama-3.3-70b-versatile`), with a deterministic, privilege-ordered prompt structure: `[SYSTEM] → [CONTEXT] → [USER]`.
 4. **Stage 4: Output Guardrails** — Post-generation pipeline consisting of:
    - **Sanitizer**: PII scrubbing from LLM responses.
-   - **Medical Validator**: Keyword-based blocking of dangerous medical advice.
-   - **Policy Filter**: Jailbreak-success detection (e.g., detecting compliant-to-bad-request language).
+1.  **Stage 1: Input Defense (Vector Shield)** — Probabilistic, semantic-similarity-based filter using `all-MiniLM-L6-v2` embeddings to detect user-level prompt injection before any processing occurs.
+2.  **Stage 2: Context Retrieval & Scanning** — Deterministic EHR lookup, followed by optional semantic scanning of retrieved patient records to prevent **Indirect Injection** (Experiment 4: Gap Analysis).
+3.  **Stage 3: LLM Invocation** — Isolated proxy for external model calls (Groq / `llama-3.3-70b-versatile`), with a deterministic, privilege-ordered prompt structure: `[SYSTEM] → [CONTEXT] → [USER]`.
+4.  **Stage 4: Output Guardrails** — Post-generation pipeline consisting of:
+    -   **Sanitizer**: PII scrubbing from LLM responses.
+    -   **Medical Validator**: Keyword-based blocking of dangerous medical advice.
+    -   **Policy Filter**: Jailbreak-success detection (e.g., detecting compliant-to-bad-request language).
 
 ### Key Research Findings
 
-- **Indirect Injection Success Rate (Baseline):** **0/3 indirect attacks blocked** without context scanning enabled — demonstrating a critical gap in input-only defenses.
-- **Context Scanning (Experiment 4):** Identified as a necessary countermeasure where malicious instructions embedded in EHR data bypass the input-only Vector Shield.
-- **Utility Validation:** Benign requests (e.g., patient summarization) pass through the full pipeline without false positives.
-- **Vector Shield Threshold:** Configurable cosine-similarity threshold (`0.6` default); attacks scoring above this are blocked at the earliest stage, minimizing latency.
+-   **Indirect Injection Success Rate (Baseline):** **0/3 indirect attacks blocked** without context scanning enabled — demonstrating a critical gap in input-only defenses.
+-   **Context Scanning (Experiment 4):** Identifies the *Signal Dilution Effect* where malicious payloads embedded in clinical text evade semantic detection at standard thresholds.
+-   **System Reliability:** Current prototype shows a 21.33% attack block rate in large-scale batch testing, highlighting the need for structural/tag-based defense layers beyond semantic similarity.
+-   **Utility Validation:** Benign requests (e.g., patient summarization) pass through the full pipeline without false positives.
+-   **Vector Shield Threshold:** Configurable cosine-similarity threshold (`0.6` default); attacks scoring above this are blocked at the earliest stage, minimizing latency.
 
 ---
 
@@ -104,9 +110,26 @@ Three distinct attack categories are simulated:
 | Category | ID | Description | Expected Outcome |
 |---|---|---|---|
 | **Direct Injection** | DI_01–03 | User explicitly overrides system instructions | `BLOCKED` by Vector Shield |
-| **Indirect Injection** | II_01 | Malicious payload embedded in EHR record (`ATTACK_01`) | `BLOCKED` by Context Scanner |
+| **Indirect Injection** | II_01 | Indirect Injection (Pirate) | ALLOWED |
+| II_02 | Indirect Injection (Admin) | ALLOWED |
+| II_03 | Indirect Injection (Dosage) | ALLOWED |
 | **Role Confusion** | RC_01 | Attacker impersonates System Admin | `BLOCKED` by Vector Shield |
-| **Benign** | BN_01 | Standard clinical summarization request | `ALLOWED` end-to-end |
+| **Benign** | BN_01 | Standard clinical summarization request | ALLOWED |
+
+### The Signal Dilution Effect
+Experimental data revealed that embedding malicious instructions within long clinical records significantly dilutes the semantic vector distance. Even with Context Scanning enabled, the cosine similarity score often remains below the detection threshold (e.g., ~0.56 vs a 0.65 threshold), allowing the injection to pass.
+
+## 📊 Large-Scale Batch Evaluation
+Beyond the primary test cases, the system was evaluated against a 100-sample synthetic dataset (`data/test_dataset_large.json`).
+
+| Metric | Result |
+| :--- | :--- |
+| **Overall Attack Block Rate** | 21.33% |
+| Role Confusion Block Rate | 0.0% |
+| Indirect Injection Block Rate | 0.0% |
+| Medical Safety Block Rate | 20.0% |
+
+*Detailed metrics available in `reports/final_metrics.md`.*
 
 ### Experiment 4: Gap Analysis (Indirect Injection)
 
